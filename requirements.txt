@@ -5,5 +5,3 @@ python-dotenv
 streamlit
 langchain-core
 python-dotenv
-re
-os

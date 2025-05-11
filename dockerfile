@@ -1,24 +1,24 @@
-FROM python:3.13-slim
+FROM ubuntu:latest
 
-WORKDIR /app
+WORKDIR /usr/app/src
 
-# Copy requirements first for better layer caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+ARG LANG='en_US.UTF-8'
 
-# Copy the rest of the application code
-COPY . .
+# Download and Install Dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        apt-utils \
+        locales \
+        python3-pip \
+        python3-yaml \
+        rsyslog systemd systemd-cron sudo \
+    && apt-get clean
 
-# Create a directory for .env file
-RUN mkdir -p /app/config
+RUN pip3 install --upgrade pip
 
-# Expose the port Streamlit runs on
-EXPOSE 8501
+RUN pip3 install streamlit
 
-# Environment variables
-ENV STREAMLIT_SERVER_PORT=8501
-ENV STREAMLIT_SERVER_HEADLESS=true
-ENV STREAMLIT_SERVER_ENABLE_CORS=false
+COPY ./ ./
 
-# Command to run the application
-CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0"]
+# Tell the image what to do when it starts as a container
+CMD ["streamlit", "run", "app.py"]
