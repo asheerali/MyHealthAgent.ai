@@ -2,3 +2,6 @@ langgraph
 langchain
 google-generativeai
 python-dotenv
+streamlit
+langchain-core
+python-dotenv
