@@ -1,24 +1,48 @@
-FROM ubuntu:latest
+# FROM python:3.10-slim
 
-WORKDIR /usr/app/src
+# WORKDIR /app
 
-ARG LANG='en_US.UTF-8'
+# # Install required system dependencies
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     locales \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
-# Download and Install Dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        apt-utils \
-        locales \
-        python3-pip \
-        python3-yaml \
-        rsyslog systemd systemd-cron sudo \
-    && apt-get clean
+# # Optional: Set locale
+# ENV LANG=en_US.UTF-8
+# # Copy project files
+# COPY ./ ./
+# # Upgrade pip and install Streamlit
+# RUN pip install --upgrade pip
+# RUN pip install -r requirements.txt
 
-RUN pip3 install --upgrade pip
+# RUN pip install streamlit
 
-RUN pip3 install streamlit
+# # Copy project files
+# COPY ./ ./
 
-COPY ./ ./
+# # Run Streamlit app
+# CMD ["streamlit", "run", "main.py"]
 
-# Tell the image what to do when it starts as a container
-CMD ["streamlit", "run", "app.py"]
+
+# Use an official Python runtime as a parent image
+FROM python:3.13-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt ./requirements.txt
+
+# Install any needed packages specified in requirements.txt
+RUN pip install -r requirements.txt
+
+# Make port 8501 available to the world outside this container
+EXPOSE 8501
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Define the command to run the app using streamlit
+ENTRYPOINT ["streamlit", "run"]
+CMD ["app.py"]
