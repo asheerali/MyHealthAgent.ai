@@ -34,6 +34,7 @@ WORKDIR /app
 # Copy the dependencies file to the working directory
 COPY requirements.txt ./requirements.txt
 
+RUN pip install --upgrade pip
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
 
